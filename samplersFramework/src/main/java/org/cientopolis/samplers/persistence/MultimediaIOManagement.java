@@ -21,6 +21,7 @@ import java.io.OutputStream;
 public class MultimediaIOManagement {
 
     public static final String PHOTO_EXTENSION = "jpg";
+    public static final String SOUND_EXTENSION = "mp4";
 
     private static final String TEMP_DIR = "tmp";
 
