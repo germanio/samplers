@@ -29,6 +29,11 @@ public class SoundRecordFragment extends StepFragment {
     private Button mRecordButton;
     private Button mPauseButton;
 
+    private int mRecordPromptCount = 0;
+    long timeWhenPaused = 0; //stores time when user clicks pause button
+
+    private boolean mStartRecording = true;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.fragment_sound_record;
@@ -40,6 +45,13 @@ public class SoundRecordFragment extends StepFragment {
         mRecordingPrompt = (TextView) rootView.findViewById(R.id.recording_status_text);
         //assign listeners
         mRecordButton = (Button) rootView.findViewById(R.id.btnStart);
+        mRecordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onRecord(mStartRecording);
+                mStartRecording = !mStartRecording;
+            }
+        });
         mPauseButton = (Button)  rootView.findViewById(R.id.btnPause);
         mPauseButton.setVisibility(View.GONE); //pause does not show until start recording
     }
@@ -66,9 +78,10 @@ public class SoundRecordFragment extends StepFragment {
 
         if (start) {
             // start recording
-            mRecordButton.setImageResource(R.drawable.ic_media_stop);
-            //mPauseButton.setVisibility(View.VISIBLE);
-            Toast.makeText(getActivity(),R.string.toast_recording_start,Toast.LENGTH_SHORT).show();
+            /*this change image from "start" to "stop"*/
+            //mRecordButton.setImageResource(R.drawable.ic_media_stop);
+            mPauseButton.setVisibility(View.VISIBLE);
+
             File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
             if (!folder.exists()) {
                 //folder /SoundRecorder doesn't exist, create the folder
@@ -104,8 +117,8 @@ public class SoundRecordFragment extends StepFragment {
 
         } else {
             //stop recording
-            mRecordButton.setImageResource(R.drawable.ic_mic_white_36dp);
-            //mPauseButton.setVisibility(View.GONE);
+            //mRecordButton.setImageResource(R.drawable.ic_mic_white_36dp);
+            mPauseButton.setVisibility(View.GONE);
             mChronometer.stop();
             mChronometer.setBase(SystemClock.elapsedRealtime());
             timeWhenPaused = 0;
@@ -115,5 +128,9 @@ public class SoundRecordFragment extends StepFragment {
             //allow the screen to turn off again once recording is finished
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    private void onPauseRecord(boolean pause) {
+        
     }
 }
