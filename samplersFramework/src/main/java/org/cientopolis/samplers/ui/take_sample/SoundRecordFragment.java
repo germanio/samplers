@@ -33,6 +33,7 @@ public class SoundRecordFragment extends StepFragment {
     long timeWhenPaused = 0; //stores time when user clicks pause button
 
     private boolean mStartRecording = true;
+    private boolean mPauseRecording = true;
 
     @Override
     protected int getLayoutResource() {
@@ -53,6 +54,13 @@ public class SoundRecordFragment extends StepFragment {
             }
         });
         mPauseButton = (Button)  rootView.findViewById(R.id.btnPause);
+        mPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPauseRecord(mPauseRecording);
+                mPauseRecording = !mPauseRecording;
+            }
+        });
         mPauseButton.setVisibility(View.GONE); //pause does not show until start recording
     }
 
@@ -131,6 +139,20 @@ public class SoundRecordFragment extends StepFragment {
     }
 
     private void onPauseRecord(boolean pause) {
-        
+        if (pause) {
+            //pause recording
+            /*mPauseButton.setCompoundDrawablesWithIntrinsicBounds
+                    (R.drawable.ic_media_play ,0 ,0 ,0);*/
+            mRecordingPrompt.setText(getString(R.string.resume_recording_button).toUpperCase());
+            timeWhenPaused = mChronometer.getBase() - SystemClock.elapsedRealtime();
+            mChronometer.stop();
+        } else {
+            //resume recording
+           /* mPauseButton.setCompoundDrawablesWithIntrinsicBounds
+                    (R.drawable.ic_media_pause ,0 ,0 ,0);*/
+            mRecordingPrompt.setText(getString(R.string.pause_recording_button).toUpperCase());
+            mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenPaused);
+            mChronometer.start();
+        }
     }
 }

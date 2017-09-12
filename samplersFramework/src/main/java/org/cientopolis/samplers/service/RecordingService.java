@@ -72,6 +72,7 @@ public class RecordingService extends Service {
     }
 
     public void startRecording(){
+        setFileNameAndPath();
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);

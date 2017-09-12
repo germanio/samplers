@@ -8,6 +8,7 @@ import org.cientopolis.samplers.model.PhotoStep;
 import org.cientopolis.samplers.model.SelectOneOption;
 import org.cientopolis.samplers.model.SelectOneStep;
 import org.cientopolis.samplers.model.MultipleSelectOption;
+import org.cientopolis.samplers.model.SoundRecordStep;
 import org.cientopolis.samplers.model.Step;
 import org.cientopolis.samplers.model.Workflow;
 import org.cientopolis.samplers.network.NetworkConfiguration;
@@ -42,8 +43,8 @@ public class MyMainSamplersActivity  extends SamplersMainActivity {
         workflow.addStep(new InformationStep(1, "Informacion de prueba para ver que se muestra bien",2));
 
         // SelectOneStep
-        ArrayList<SelectOneOption> optionsToSelect2 = new ArrayList<SelectOneOption>();
-        optionsToSelect2.add(new SelectOneOption(1,"SI", 5));
+        //ArrayList<SelectOneOption> optionsToSelect2 = new ArrayList<SelectOneOption>();
+        /**optionsToSelect2.add(new SelectOneOption(1,"SI", 5));
         optionsToSelect2.add(new SelectOneOption(2,"NO", 6));
         workflow.addStep(new SelectOneStep(2, optionsToSelect2, "¿Quiere sacar una foto?"));
 
@@ -62,15 +63,17 @@ public class MyMainSamplersActivity  extends SamplersMainActivity {
         optionsToSelect.add(new MultipleSelectOption(2,"Basura"));
         optionsToSelect.add(new MultipleSelectOption(3,"Arroyo"));
         optionsToSelect.add(new MultipleSelectOption(4,"Animales"));
-        workflow.addStep(new MultipleSelectStep(6, optionsToSelect, "Seleccione si observa algo de esto",7));
+        workflow.addStep(new MultipleSelectStep(6, optionsToSelect, "Seleccione si observa algo de esto",7));*/
 
         // SelectOneStep
-        optionsToSelect2 = new ArrayList<SelectOneOption>();
+        /*optionsToSelect2 = new ArrayList<SelectOneOption>();
         optionsToSelect2.add(new SelectOneOption(1,"Opcion 1", null));
         optionsToSelect2.add(new SelectOneOption(2,"Opcion 2", null));
         optionsToSelect2.add(new SelectOneOption(3,"Opcion 3", null));
         optionsToSelect2.add(new SelectOneOption(4,"Opcion 4", null));
-        workflow.addStep(new SelectOneStep(7, optionsToSelect2, "Seleccione solo uno"));
+        workflow.addStep(new SelectOneStep(7, optionsToSelect2, "Seleccione solo uno"));*/
+
+        workflow.addStep(new SoundRecordStep(2,"",null));
 
         return workflow;
     }
