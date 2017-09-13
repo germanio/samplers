@@ -64,4 +64,8 @@
     <item name="toast_font_color_info" type="color">@color/white</item>
     <item name="toast_font_color_error" type="color">@color/white</item>
     <item name="toast_font_color_error_fatal" type="color">@color/white</item>
+
+    <item name="accent" type="color">#FFC107</item>
+    <item name="primary" type="color">#F44336</item>
+
 </resources>

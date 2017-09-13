@@ -8,12 +8,11 @@
         android:id="@+id/chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="97dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="159dp"
+        android:layout_marginTop="57dp"
         android:textSize="60sp"
-        />
+        android:layout_alignTop="@+id/recordProgressBar"
+        android:layout_toStartOf="@+id/bt_next"
+        android:layout_marginEnd="22dp" />
 
     <ProgressBar
         android:id="@+id/recordProgressBar"
@@ -22,9 +21,9 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="54dp"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/btnPause" />
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
