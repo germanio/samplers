@@ -4,26 +4,29 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Chronometer
-        android:id="@+id/chronometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="57dp"
-        android:textSize="60sp"
-        android:layout_alignTop="@+id/recordProgressBar"
-        android:layout_toStartOf="@+id/bt_next"
-        android:layout_marginEnd="22dp" />
-
     <ProgressBar
-        android:id="@+id/recordProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progressBar"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:progressDrawable="@drawable/record_progress_bar"
+        android:background="@drawable/record_progress_bar_background"
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="27dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <Chronometer
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chronometer"
+        android:textSize="60sp"
+        android:fontFamily="sans-serif-light"
+        android:layout_alignBottom="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="64dp"/>
 
     <Button
         android:layout_width="wrap_content"

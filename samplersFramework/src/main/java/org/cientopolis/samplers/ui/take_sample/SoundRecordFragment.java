@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.cientopolis.samplers.R;
+import org.cientopolis.samplers.model.SoundRecordStep;
+import org.cientopolis.samplers.model.SoundRecordStepResult;
 import org.cientopolis.samplers.model.Step;
 import org.cientopolis.samplers.model.StepResult;
 import org.cientopolis.samplers.service.RecordingService;
@@ -65,8 +67,8 @@ public class SoundRecordFragment extends StepFragment {
     }
 
     @Override
-    protected <T extends Step> T getStep() {
-        return null;
+    protected SoundRecordStep getStep() {
+        return (SoundRecordStep) step;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class SoundRecordFragment extends StepFragment {
 
     @Override
     protected StepResult getStepResult() {
-        return null;
+        return new SoundRecordStepResult(getStep().getId(),"");
     }
 
     /*functionality*/

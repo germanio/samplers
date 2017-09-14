@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.cientopolis.samplers.persistence.MultimediaIOManagement;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.TimerTask;
@@ -42,18 +44,16 @@ public class RecordingService extends Service {
     }
 
     public void setFileNameAndPath(){
-        int count = 0;
-        File f;
+        try {
+            File f = MultimediaIOManagement.saveTempAudioFile(getApplicationContext(), MultimediaIOManagement.SOUND_EXTENSION);
+            mFileName = f.toString();
+            mFilePath = f.getAbsolutePath();
 
-        do{
-            count++;
-
-            mFileName = String.format("%d."+"mp4", System.currentTimeMillis());
-            mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            mFilePath += "/SoundRecorder/" + mFileName;
-
-            f = new File(mFilePath);
-        }while (f.exists() && !f.isDirectory());
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            Log.e("rec service", "error creating temp sound file");
+        }
     }
 
     @Override
