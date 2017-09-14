@@ -29,7 +29,6 @@ public class SoundRecordFragment extends StepFragment {
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
     private Button mRecordButton;
-    private Button mPauseButton;
 
     private int mRecordPromptCount = 0;
     long timeWhenPaused = 0; //stores time when user clicks pause button
@@ -55,15 +54,6 @@ public class SoundRecordFragment extends StepFragment {
                 mStartRecording = !mStartRecording;
             }
         });
-        mPauseButton = (Button)  rootView.findViewById(R.id.btnPause);
-        mPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onPauseRecord(mPauseRecording);
-                mPauseRecording = !mPauseRecording;
-            }
-        });
-        mPauseButton.setVisibility(View.GONE); //pause does not show until start recording
     }
 
     @Override
@@ -73,7 +63,7 @@ public class SoundRecordFragment extends StepFragment {
 
     @Override
     protected boolean validate() {
-        return false;
+        return true;
     }
 
     @Override
@@ -84,19 +74,40 @@ public class SoundRecordFragment extends StepFragment {
     /*functionality*/
     private void onRecord(boolean start){
 
-        Intent intent = new Intent(getActivity(), RecordingService.class);
+        /**
+         * // Explicit intent to wrap
+         Intent intent = new Intent(this, LoginActivity.class);
 
+         // Create pending intent and wrap our intent
+         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+         try {
+         // Perform the operation associated with our pendingIntent
+         pendingIntent.send();
+         } catch (PendingIntent.CanceledException e) {
+         e.printStackTrace();
+         }
+         */
+
+        /**
+         * int seconds = 3;
+         // Create an intent that will be wrapped in PendingIntent
+         Intent intent = new Intent(this, MyReceiver.class);
+
+         // Create the pending intent and wrap our intent
+         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
+
+         // Get the alarm manager service and schedule it to go off after 3s
+         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (seconds * 1000), pendingIntent);
+
+         Toast.makeText(this, "Alarm set in " + seconds + " seconds", Toast.LENGTH_LONG).show();*/
+
+        Intent intent = new Intent(getActivity(), RecordingService.class);
         if (start) {
             // start recording
             /*this change image from "start" to "stop"*/
             //mRecordButton.setImageResource(R.drawable.ic_media_stop);
-            mPauseButton.setVisibility(View.VISIBLE);
-
-            File folder = new File(Environment.getExternalStorageDirectory() + "/SoundRecorder");
-            if (!folder.exists()) {
-                //folder /SoundRecorder doesn't exist, create the folder
-                folder.mkdir();
-            }
+            mRecordButton.setText(getString(R.string.stop_recording_button));
 
             //start Chronometer
             mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -116,7 +127,6 @@ public class SoundRecordFragment extends StepFragment {
                     mRecordPromptCount++;
                 }
             });
-
             //start RecordingService
             getActivity().startService(intent);
             //keep screen on while recording
@@ -128,7 +138,7 @@ public class SoundRecordFragment extends StepFragment {
         } else {
             //stop recording
             //mRecordButton.setImageResource(R.drawable.ic_mic_white_36dp);
-            mPauseButton.setVisibility(View.GONE);
+            mRecordButton.setText(getString(R.string.start_recording_button));
             mChronometer.stop();
             mChronometer.setBase(SystemClock.elapsedRealtime());
             timeWhenPaused = 0;
@@ -140,21 +150,4 @@ public class SoundRecordFragment extends StepFragment {
         }
     }
 
-    private void onPauseRecord(boolean pause) {
-        if (pause) {
-            //pause recording
-            /*mPauseButton.setCompoundDrawablesWithIntrinsicBounds
-                    (R.drawable.ic_media_play ,0 ,0 ,0);*/
-            mRecordingPrompt.setText(getString(R.string.resume_recording_button).toUpperCase());
-            timeWhenPaused = mChronometer.getBase() - SystemClock.elapsedRealtime();
-            mChronometer.stop();
-        } else {
-            //resume recording
-           /* mPauseButton.setCompoundDrawablesWithIntrinsicBounds
-                    (R.drawable.ic_media_pause ,0 ,0 ,0);*/
-            mRecordingPrompt.setText(getString(R.string.pause_recording_button).toUpperCase());
-            mChronometer.setBase(SystemClock.elapsedRealtime() + timeWhenPaused);
-            mChronometer.start();
-        }
-    }
 }

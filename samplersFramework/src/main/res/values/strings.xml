@@ -35,10 +35,12 @@
     <string name="error_must_insert_text">Debe ingresar algo</string>
 
     <!-- for audio record-->
-    <string name="record_in_progress">Recording</string>
+    <string name="record_in_progress">Grabando</string>
     <string name="record_prompt">Tap the button to start recording</string>
     <string name="resume_recording_button">Resume</string>
-    <string name="pause_recording_button">Pause</string>
+    <string name="stop_recording_button">Detener</string>
+    <string name="start_recording_button">Grabar</string>
+
 
 
 </resources>
