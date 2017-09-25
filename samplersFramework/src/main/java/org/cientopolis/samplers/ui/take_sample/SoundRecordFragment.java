@@ -1,8 +1,12 @@
 package org.cientopolis.samplers.ui.take_sample;
 
+import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,12 +33,32 @@ public class SoundRecordFragment extends StepFragment {
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
     private Button mRecordButton;
+    private String fileName;
+    boolean mBound = false;
+
 
     private int mRecordPromptCount = 0;
     long timeWhenPaused = 0; //stores time when user clicks pause button
 
     private boolean mStartRecording = true;
     private boolean mPauseRecording = true;
+    private RecordingService mRecordingService;
+
+    private ServiceConnection mConnection = new ServiceConnection(){
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            RecordingService.LocalBinder binder = (RecordingService.LocalBinder) service;
+            mRecordingService = binder.getService();
+            mRecordingService.startRecording();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            //
+        }
+    };
+
 
     @Override
     protected int getLayoutResource() {
@@ -68,41 +92,16 @@ public class SoundRecordFragment extends StepFragment {
 
     @Override
     protected StepResult getStepResult() {
-        return new SoundRecordStepResult(getStep().getId(),"");
+        return new SoundRecordStepResult(getStep().getId(),fileName);
     }
 
     /*functionality*/
     private void onRecord(boolean start){
 
-        /**
-         * // Explicit intent to wrap
-         Intent intent = new Intent(this, LoginActivity.class);
-
-         // Create pending intent and wrap our intent
-         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-         try {
-         // Perform the operation associated with our pendingIntent
-         pendingIntent.send();
-         } catch (PendingIntent.CanceledException e) {
-         e.printStackTrace();
-         }
-         */
-
-        /**
-         * int seconds = 3;
-         // Create an intent that will be wrapped in PendingIntent
-         Intent intent = new Intent(this, MyReceiver.class);
-
-         // Create the pending intent and wrap our intent
-         PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1, intent, 0);
-
-         // Get the alarm manager service and schedule it to go off after 3s
-         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + (seconds * 1000), pendingIntent);
-
-         Toast.makeText(this, "Alarm set in " + seconds + " seconds", Toast.LENGTH_LONG).show();*/
-
         Intent intent = new Intent(getActivity(), RecordingService.class);
+
+        /*test for pending intent*/
+        //PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         if (start) {
             // start recording
             /*this change image from "start" to "stop"*/
@@ -128,7 +127,7 @@ public class SoundRecordFragment extends StepFragment {
                 }
             });
             //start RecordingService
-            getActivity().startService(intent);
+            getActivity().bindService(intent, mConnection, getActivity().BIND_AUTO_CREATE);
             //keep screen on while recording
             getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -144,7 +143,13 @@ public class SoundRecordFragment extends StepFragment {
             timeWhenPaused = 0;
             mRecordingPrompt.setText(getString(R.string.record_prompt));
 
-            getActivity().stopService(intent);
+            //getActivity().stopService(intent);
+            if(mBound) {
+                fileName = mRecordingService.getFileName();
+                mRecordingService.stopRecording();
+                getActivity().unbindService(mConnection);
+                mBound = false;
+            }
             //allow the screen to turn off again once recording is finished
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }

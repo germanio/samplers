@@ -3,11 +3,10 @@ package org.cientopolis.samplers.service;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaRecorder;
-import android.os.Environment;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.cientopolis.samplers.persistence.MultimediaIOManagement;
 
@@ -22,25 +21,21 @@ import java.util.TimerTask;
 public class RecordingService extends Service {
     private MediaRecorder mRecorder;
     private long mStartingTimeMillis = 0;
-    private long mElapsedMillis = 0;
-    private int mElapsedSeconds = 0;
     private TimerTask mIncrementTimerTask = null;
 
-    /*MultimediaIOManagement future resposibility*/
+    /*MultimediaIOManagement future responsibility*/
     private String mFileName = null;
     private String mFilePath = null;
 
     /**/
     private static final String LOG_TAG = "RecordingService";
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
-    }
-
-    public interface OnTimerChangedListener {
-        void onTimerChanged(int seconds);
+        return mBinder;
     }
 
     public void setFileNameAndPath(){
@@ -54,12 +49,6 @@ public class RecordingService extends Service {
             e.printStackTrace();
             Log.e("rec service", "error creating temp sound file");
         }
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        startRecording();
-        return START_STICKY;
     }
 
     @Override
@@ -97,11 +86,15 @@ public class RecordingService extends Service {
         }
     }
 
+    public String getFileName(){
+        return mFileName;
+    }
+
     public void stopRecording() {
         mRecorder.stop();
-        mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
+        //mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
         mRecorder.release();
-        Toast.makeText(this, "recording saved to" + mFilePath, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "recording saved to" + mFilePath, Toast.LENGTH_LONG).show();
 
         //remove notification
         if (mIncrementTimerTask != null) {
@@ -110,14 +103,13 @@ public class RecordingService extends Service {
         }
 
         mRecorder = null;
-        /*MultimediaIOManagement responsibility
-        try {
-            mDatabase.addRecording(mFileName, mFilePath, mElapsedMillis);
+    }
 
-        } catch (Exception e){
-            Log.e(LOG_TAG, "exception", e);
+    public class LocalBinder extends Binder {
+        public RecordingService getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return RecordingService.this;
         }
-        */
     }
 
 
