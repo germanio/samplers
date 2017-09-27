@@ -40,6 +40,7 @@
     <string name="resume_recording_button">Resume</string>
     <string name="stop_recording_button">Detener</string>
     <string name="start_recording_button">Grabar</string>
+    <string name="play_recorded">Reproducir</string>
 
 
 

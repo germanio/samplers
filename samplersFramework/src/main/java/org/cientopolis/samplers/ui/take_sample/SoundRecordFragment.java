@@ -4,14 +4,17 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +35,14 @@ public class SoundRecordFragment extends StepFragment {
 
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
+    private TextView lbFileName;
     private Button mRecordButton;
     private String fileName;
     boolean mBound = false;
+
+    private MediaRecorder mRecorder;
+    private Handler mHandler = new Handler();
+    private SeekBar mSeekBar = null;
 
 
     private int mRecordPromptCount = 0;
@@ -69,6 +77,7 @@ public class SoundRecordFragment extends StepFragment {
     protected void onCreateViewStepFragment(View rootView, Bundle savedInstanceState) {
         mChronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
         mRecordingPrompt = (TextView) rootView.findViewById(R.id.recording_status_text);
+        lbFileName = (TextView) rootView.findViewById(R.id.lbSoundFile);
         //assign listeners
         mRecordButton = (Button) rootView.findViewById(R.id.btnStart);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +87,7 @@ public class SoundRecordFragment extends StepFragment {
                 mStartRecording = !mStartRecording;
             }
         });
+
     }
 
     @Override
@@ -146,6 +156,7 @@ public class SoundRecordFragment extends StepFragment {
             //getActivity().stopService(intent);
             if(mBound) {
                 fileName = mRecordingService.getFileName();
+
                 mRecordingService.stopRecording();
                 getActivity().unbindService(mConnection);
                 mBound = false;
@@ -153,6 +164,12 @@ public class SoundRecordFragment extends StepFragment {
             //allow the screen to turn off again once recording is finished
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+    }
+
+    /*test for playing recorded audio*/
+
+    private void startPlaying() {
+        //
     }
 
 }
