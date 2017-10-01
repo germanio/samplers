@@ -9,26 +9,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/play_recorded"
-        android:layout_below="@+id/seekbar"
-        android:layout_centerHorizontal="true" />
-
-    <SeekBar
-        android:id="@+id/seekbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lbSoundFile"
-        android:layout_alignStart="@+id/lbSoundFile" />
-
-    <TextView
-        android:id="@+id/lbSoundFile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:fontFamily="sans-serif-condensed"
-        android:text="file_name.mp4"
-        android:textSize="18sp"
-        android:layout_below="@+id/btnStart"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/bt_next"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="23dp" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"

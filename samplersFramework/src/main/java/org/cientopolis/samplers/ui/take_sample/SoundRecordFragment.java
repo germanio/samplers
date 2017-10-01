@@ -1,15 +1,23 @@
 package org.cientopolis.samplers.ui.take_sample;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -23,6 +31,7 @@ import org.cientopolis.samplers.model.SoundRecordStep;
 import org.cientopolis.samplers.model.SoundRecordStepResult;
 import org.cientopolis.samplers.model.Step;
 import org.cientopolis.samplers.model.StepResult;
+import org.cientopolis.samplers.service.RecordingItem;
 import org.cientopolis.samplers.service.RecordingService;
 
 import java.io.File;
@@ -35,15 +44,11 @@ public class SoundRecordFragment extends StepFragment {
 
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
-    private TextView lbFileName;
     private Button mRecordButton;
+    private Button mPlayButton;
     private String fileName;
     boolean mBound = false;
-
-    private MediaRecorder mRecorder;
-    private Handler mHandler = new Handler();
-    private SeekBar mSeekBar = null;
-
+    private RecordingItem mRecordingItem;
 
     private int mRecordPromptCount = 0;
     long timeWhenPaused = 0; //stores time when user clicks pause button
@@ -77,7 +82,6 @@ public class SoundRecordFragment extends StepFragment {
     protected void onCreateViewStepFragment(View rootView, Bundle savedInstanceState) {
         mChronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
         mRecordingPrompt = (TextView) rootView.findViewById(R.id.recording_status_text);
-        lbFileName = (TextView) rootView.findViewById(R.id.lbSoundFile);
         //assign listeners
         mRecordButton = (Button) rootView.findViewById(R.id.btnStart);
         mRecordButton.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +91,24 @@ public class SoundRecordFragment extends StepFragment {
                 mStartRecording = !mStartRecording;
             }
         });
+        mPlayButton = (Button) rootView.findViewById(R.id.btnPlay);
+        mPlayButton.setOnClickListener(new View.OnClickListener(){
 
+            @Override
+            public void onClick(View v) {
+                try {
+                    PlaybackFragment playbackFragment = new PlaybackFragment().newInstance(mRecordingItem);
+                    FragmentTransaction transaction = ((FragmentActivity) getActivity())
+                            .getSupportFragmentManager()
+                            .beginTransaction();
+
+                    playbackFragment.show(transaction, "dialog_playback");
+
+                } catch (Exception e) {
+                    Log.e("playback exc", "exception", e);
+                }
+            }
+        });
     }
 
     @Override
@@ -109,9 +130,14 @@ public class SoundRecordFragment extends StepFragment {
     private void onRecord(boolean start){
 
         Intent intent = new Intent(getActivity(), RecordingService.class);
+        /** Permission for audio source*/
+         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 10);
+         } else {
 
-        /*test for pending intent*/
-        //PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        /*comment to exclude permission request*/
+
         if (start) {
             // start recording
             /*this change image from "start" to "stop"*/
@@ -156,6 +182,15 @@ public class SoundRecordFragment extends StepFragment {
             //getActivity().stopService(intent);
             if(mBound) {
                 fileName = mRecordingService.getFileName();
+                mRecordingItem = new RecordingItem();
+                mRecordingItem.setName(fileName);
+                /*get Duration*/
+                Uri uri = Uri.parse(fileName);
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                mmr.setDataSource(getActivity(),uri);
+                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                int millSecond = Integer.parseInt(durationStr);
+                mRecordingItem.setLength(millSecond);
 
                 mRecordingService.stopRecording();
                 getActivity().unbindService(mConnection);
@@ -164,6 +199,8 @@ public class SoundRecordFragment extends StepFragment {
             //allow the screen to turn off again once recording is finished
             getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+
+         } /*comment to exclude permission request*/
     }
 
     /*test for playing recorded audio*/
