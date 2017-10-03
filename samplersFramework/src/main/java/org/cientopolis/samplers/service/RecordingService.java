@@ -21,6 +21,7 @@ import java.util.TimerTask;
 public class RecordingService extends Service {
     private MediaRecorder mRecorder;
     private long mStartingTimeMillis = 0;
+    private long mElapsedMillis = 0;
     private TimerTask mIncrementTimerTask = null;
 
     /*MultimediaIOManagement future responsibility*/
@@ -90,9 +91,14 @@ public class RecordingService extends Service {
         return mFileName;
     }
 
+    public int getElapsedMillis(){
+        return (int)mElapsedMillis;
+    }
+
+
     public void stopRecording() {
         mRecorder.stop();
-        //mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
+        mElapsedMillis = (System.currentTimeMillis() - mStartingTimeMillis);
         mRecorder.release();
         //Toast.makeText(this, "recording saved to" + mFilePath, Toast.LENGTH_LONG).show();
 

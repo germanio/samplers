@@ -184,15 +184,11 @@ public class SoundRecordFragment extends StepFragment {
                 fileName = mRecordingService.getFileName();
                 mRecordingItem = new RecordingItem();
                 mRecordingItem.setName(fileName);
+                mRecordingService.stopRecording();
                 /*get Duration*/
-                Uri uri = Uri.parse(fileName);
-                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                mmr.setDataSource(getActivity(),uri);
-                String durationStr = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-                int millSecond = Integer.parseInt(durationStr);
+                int millSecond = mRecordingService.getElapsedMillis();
                 mRecordingItem.setLength(millSecond);
 
-                mRecordingService.stopRecording();
                 getActivity().unbindService(mConnection);
                 mBound = false;
             }
