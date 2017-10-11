@@ -1,7 +1,6 @@
 package org.cientopolis.samplers.ui.take_sample;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -15,8 +14,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,7 +22,7 @@ import android.widget.Chronometer;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.app.FragmentTransaction;
 import org.cientopolis.samplers.R;
 import org.cientopolis.samplers.model.SoundRecordStep;
 import org.cientopolis.samplers.model.SoundRecordStepResult;
@@ -97,12 +94,18 @@ public class SoundRecordFragment extends StepFragment {
             @Override
             public void onClick(View v) {
                 try {
-                    PlaybackFragment playbackFragment = new PlaybackFragment().newInstance(mRecordingItem);
-                    FragmentTransaction transaction = ((FragmentActivity) getActivity())
-                            .getSupportFragmentManager()
-                            .beginTransaction();
 
-                    playbackFragment.show(transaction, "dialog_playback");
+                    //android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    PlaybackFragment playbackFragment = new PlaybackFragment().newInstance(mRecordingItem);
+                    //FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    playbackFragment.show(getFragmentManager(),"");
+
+
+                            /*((FragmentActivity) getActivity())
+                            .getSupportFragmentManager()
+                            .beginTransaction();*/
+
+                    //playbackFragment.show(transaction, "dialog_playback");
 
                 } catch (Exception e) {
                     Log.e("playback exc", "exception", e);
