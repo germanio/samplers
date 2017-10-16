@@ -186,7 +186,8 @@ public class SoundRecordFragment extends StepFragment {
             if(mBound) {
                 fileName = mRecordingService.getFileName();
                 mRecordingItem = new RecordingItem();
-                mRecordingItem.setName(fileName);
+                mRecordingItem.setFilePath(fileName);
+                mRecordingItem.setName("sound recorded");
                 mRecordingService.stopRecording();
                 /*get Duration*/
                 int millSecond = mRecordingService.getElapsedMillis();

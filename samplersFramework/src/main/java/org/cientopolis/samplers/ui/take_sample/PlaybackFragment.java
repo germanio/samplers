@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -46,7 +47,7 @@ public class PlaybackFragment extends DialogFragment {
     private MediaPlayer mMediaPlayer = null;
 
     private SeekBar mSeekBar = null;
-    private FloatingActionButton mPlayButton = null;
+    private Button mPlayButton = null;
     private TextView mCurrentProgressTextView = null;
     private TextView mFileNameTextView = null;
     private TextView mFileLengthTextView = null;
@@ -145,7 +146,7 @@ public class PlaybackFragment extends DialogFragment {
             }
         });
 
-        mPlayButton = (FloatingActionButton) view.findViewById(R.id.fab_play);
+        mPlayButton = (Button) view.findViewById(R.id.fab_play);
         mPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
