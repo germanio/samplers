@@ -145,7 +145,8 @@ public class SoundRecordFragment extends StepFragment {
             // start recording
             /*this change image from "start" to "stop"*/
             //mRecordButton.setImageResource(R.drawable.ic_media_stop);
-            mRecordButton.setText(getString(R.string.stop_recording_button));
+            mRecordButton.setBackgroundResource(R.drawable.ic_media_pause);
+            //mRecordButton.setText(getString(R.string.stop_recording_button));
 
             //start Chronometer
             mChronometer.setBase(SystemClock.elapsedRealtime());
@@ -175,8 +176,9 @@ public class SoundRecordFragment extends StepFragment {
 
         } else {
             //stop recording
+            mRecordButton.setBackgroundResource(R.drawable.ic_launcher);
             //mRecordButton.setImageResource(R.drawable.ic_mic_white_36dp);
-            mRecordButton.setText(getString(R.string.start_recording_button));
+            //mRecordButton.setText(getString(R.string.start_recording_button));
             mChronometer.stop();
             mChronometer.setBase(SystemClock.elapsedRealtime());
             timeWhenPaused = 0;
