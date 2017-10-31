@@ -15,10 +15,12 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +43,9 @@ public class SoundRecordFragment extends StepFragment {
 
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
-    private Button mRecordButton;
+   // private Button mRecordButton;
     private Button mPlayButton;
+    private ImageButton mRecordButton;
     private String fileName;
     boolean mBound = false;
     private RecordingItem mRecordingItem;
@@ -80,7 +83,23 @@ public class SoundRecordFragment extends StepFragment {
         mChronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
         mRecordingPrompt = (TextView) rootView.findViewById(R.id.recording_status_text);
         //assign listeners
-        mRecordButton = (Button) rootView.findViewById(R.id.btnStart);
+       /** mTest = (ImageButton) rootView.findViewById(R.id.imageButton);
+        mTest.setImageResource(R.drawable.ic_launcher);
+        mRecordButton = (Button) rootView.findViewById(R.id.btnStart); */
+        mRecordButton = (ImageButton) rootView.findViewById(R.id.btnStart);
+        mRecordButton.setImageResource(R.drawable.ic_launcher);
+      /**  mRecordButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    //
+                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    //
+                }
+                return false;
+            }
+
+        });*/
         mRecordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,75 +153,69 @@ public class SoundRecordFragment extends StepFragment {
 
         Intent intent = new Intent(getActivity(), RecordingService.class);
         /** Permission for audio source*/
-         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 10);
-         } else {
-
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 10);
+        } else {
 
         /*comment to exclude permission request*/
 
-        if (start) {
-            // start recording
+            if (start) {
+                // start recording
             /*this change image from "start" to "stop"*/
-            //mRecordButton.setImageResource(R.drawable.ic_media_stop);
-            mRecordButton.setBackgroundResource(R.drawable.ic_media_pause);
-            //mRecordButton.setText(getString(R.string.stop_recording_button));
+                mRecordButton.setImageResource(R.drawable.ic_media_pause);
+                //start Chronometer
+                mChronometer.setBase(SystemClock.elapsedRealtime());
+                mChronometer.start();
+                mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                    @Override
+                    public void onChronometerTick(Chronometer chronometer) {
+                        if (mRecordPromptCount == 0) {
+                            mRecordingPrompt.setText(getString(R.string.record_in_progress) + ".");
+                        } else if (mRecordPromptCount == 1) {
+                            mRecordingPrompt.setText(getString(R.string.record_in_progress) + "..");
+                        } else if (mRecordPromptCount == 2) {
+                            mRecordingPrompt.setText(getString(R.string.record_in_progress) + "...");
+                            mRecordPromptCount = -1;
+                        }
 
-            //start Chronometer
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            mChronometer.start();
-            mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                @Override
-                public void onChronometerTick(Chronometer chronometer) {
-                    if (mRecordPromptCount == 0) {
-                        mRecordingPrompt.setText(getString(R.string.record_in_progress) + ".");
-                    } else if (mRecordPromptCount == 1) {
-                        mRecordingPrompt.setText(getString(R.string.record_in_progress) + "..");
-                    } else if (mRecordPromptCount == 2) {
-                        mRecordingPrompt.setText(getString(R.string.record_in_progress) + "...");
-                        mRecordPromptCount = -1;
+                        mRecordPromptCount++;
                     }
+                });
+                //start RecordingService
+                getActivity().bindService(intent, mConnection, getActivity().BIND_AUTO_CREATE);
+                //keep screen on while recording
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-                    mRecordPromptCount++;
-                }
-            });
-            //start RecordingService
-            getActivity().bindService(intent, mConnection, getActivity().BIND_AUTO_CREATE);
-            //keep screen on while recording
-            getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mRecordingPrompt.setText(getString(R.string.record_in_progress) + ".");
+                mRecordPromptCount++;
 
-            mRecordingPrompt.setText(getString(R.string.record_in_progress) + ".");
-            mRecordPromptCount++;
+            } else {
+                //stop recording
+                mRecordButton.setImageResource(R.drawable.ic_launcher);
+                mChronometer.stop();
+                mChronometer.setBase(SystemClock.elapsedRealtime());
+                timeWhenPaused = 0;
+                mRecordingPrompt.setText(getString(R.string.record_prompt));
 
-        } else {
-            //stop recording
-            mRecordButton.setBackgroundResource(R.drawable.ic_launcher);
-            //mRecordButton.setImageResource(R.drawable.ic_mic_white_36dp);
-            //mRecordButton.setText(getString(R.string.start_recording_button));
-            mChronometer.stop();
-            mChronometer.setBase(SystemClock.elapsedRealtime());
-            timeWhenPaused = 0;
-            mRecordingPrompt.setText(getString(R.string.record_prompt));
-
-            //getActivity().stopService(intent);
-            if(mBound) {
-                fileName = mRecordingService.getFileName();
-                mRecordingItem = new RecordingItem();
-                mRecordingItem.setFilePath(fileName);
-                mRecordingItem.setName("sound recorded");
-                mRecordingService.stopRecording();
+                //getActivity().stopService(intent);
+                if(mBound) {
+                    fileName = mRecordingService.getFileName();
+                    mRecordingItem = new RecordingItem();
+                    mRecordingItem.setFilePath(fileName);
+                    mRecordingItem.setName("sound recorded");
+                    mRecordingService.stopRecording();
                 /*get Duration*/
-                int millSecond = mRecordingService.getElapsedMillis();
-                mRecordingItem.setLength(millSecond);
+                    int millSecond = mRecordingService.getElapsedMillis();
+                    mRecordingItem.setLength(millSecond);
 
-                getActivity().unbindService(mConnection);
-                mBound = false;
+                    getActivity().unbindService(mConnection);
+                    mBound = false;
+                }
+                //allow the screen to turn off again once recording is finished
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
-            //allow the screen to turn off again once recording is finished
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
 
-         } /*comment to exclude permission request*/
+        } /*comment to exclude permission request*/
     }
 
     /*test for playing recorded audio*/

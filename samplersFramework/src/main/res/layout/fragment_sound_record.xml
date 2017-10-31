@@ -23,6 +23,7 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
+        android:layout_marginTop="7dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
@@ -32,19 +33,21 @@
         android:id="@+id/chronometer"
         android:textSize="60sp"
         android:fontFamily="sans-serif-light"
-        android:layout_marginTop="44dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="42dp"
+        android:layout_alignTop="@+id/progressBar"
         android:layout_centerHorizontal="true" />
 
-    <Button
-         android:id="@+id/btnStart"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:drawableTop="@drawable/ic_launcher"
-         android:drawablePadding="-10dp"
-        android:layout_marginBottom="42dp"
-        android:layout_above="@+id/bt_next"
-        android:layout_alignEnd="@+id/chronometer" />
+    <!--  <Button
+           android:id="@+id/btnStart"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:drawablePadding="-10dp"
+           android:layout_marginBottom="42dp"
+           android:layout_above="@+id/btnPlay"
+          android:drawableTop="@drawable/ic_launcher"
+           android:layout_alignEnd="@+id/chronometer" /> -->
+         <!--  android:drawableTop="@drawable/ic_launcher" -->
+
 
     <Button
         android:id="@+id/bt_next"
@@ -61,11 +64,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/recording_status_text"
-        android:text="@string/bt_next"
+        android:text="@string/record_prompt"
         android:textStyle="bold"
         android:textSize="17sp"
         android:textColor="#000000"
         android:fontFamily="sans-serif-condensed"
-        />
+        android:layout_below="@+id/progressBar"
+        android:layout_centerHorizontal="true" />
+
+    <ImageButton
+        android:id="@+id/btnStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_launcher"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

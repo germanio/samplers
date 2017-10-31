@@ -36,7 +36,7 @@
 
     <!-- for audio record-->
     <string name="record_in_progress">Grabando</string>
-    <string name="record_prompt">Tap the button to start recording</string>
+    <string name="record_prompt">Presione el botón para grabar</string>
     <string name="resume_recording_button">Resume</string>
     <string name="stop_recording_button">Detener</string>
     <string name="start_recording_button">Grabar</string>
