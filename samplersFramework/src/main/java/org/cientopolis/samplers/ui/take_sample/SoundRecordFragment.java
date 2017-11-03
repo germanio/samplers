@@ -5,35 +5,23 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.media.MediaMetadataRetriever;
-import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.app.FragmentTransaction;
 import org.cientopolis.samplers.R;
 import org.cientopolis.samplers.model.SoundRecordStep;
 import org.cientopolis.samplers.model.SoundRecordStepResult;
-import org.cientopolis.samplers.model.Step;
 import org.cientopolis.samplers.model.StepResult;
 import org.cientopolis.samplers.service.RecordingItem;
 import org.cientopolis.samplers.service.RecordingService;
-
-import java.io.File;
 
 /**
  * Created by laura on 06/09/17.
@@ -83,9 +71,6 @@ public class SoundRecordFragment extends StepFragment {
         mChronometer = (Chronometer) rootView.findViewById(R.id.chronometer);
         mRecordingPrompt = (TextView) rootView.findViewById(R.id.recording_status_text);
         //assign listeners
-       /** mTest = (ImageButton) rootView.findViewById(R.id.imageButton);
-        mTest.setImageResource(R.drawable.ic_launcher);
-        mRecordButton = (Button) rootView.findViewById(R.id.btnStart); */
         mRecordButton = (ImageButton) rootView.findViewById(R.id.btnStart);
         mRecordButton.setImageResource(R.drawable.ic_launcher);
       /**  mRecordButton.setOnTouchListener(new View.OnTouchListener() {
@@ -107,30 +92,31 @@ public class SoundRecordFragment extends StepFragment {
                 mStartRecording = !mStartRecording;
             }
         });
-        mPlayButton = (Button) rootView.findViewById(R.id.btnPlay);
-        mPlayButton.setOnClickListener(new View.OnClickListener(){
+        mPlayButton = (Button) rootView.findViewById(R.id.fab_play);
+     /*   mPlayButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                try {
+                try {*/
 
-                    //android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    PlaybackFragment playbackFragment = new PlaybackFragment().newInstance(mRecordingItem);
-                    //FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    playbackFragment.show(getFragmentManager(),"");
+                    /*android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();*/
+                  //  PlaybackFragment playbackFragment = new PlaybackFragment().newInstance(mRecordingItem);
+                    /*FragmentTransaction transaction = getFragmentManager().beginTransaction();*/
+                 //   playbackFragment.show(getFragmentManager(),"");
 
 
                             /*((FragmentActivity) getActivity())
                             .getSupportFragmentManager()
                             .beginTransaction();*/
 
-                    //playbackFragment.show(transaction, "dialog_playback");
+                    /*playbackFragment.show(transaction, "dialog_playback");*/
 
-                } catch (Exception e) {
+              /*  } catch (Exception e) {
                     Log.e("playback exc", "exception", e);
                 }
             }
-        });
+        });*/
+
     }
 
     @Override
@@ -161,8 +147,10 @@ public class SoundRecordFragment extends StepFragment {
 
             if (start) {
                 // start recording
-            /*this change image from "start" to "stop"*/
+                /*this change image from "start" to "stop"*/
                 mRecordButton.setImageResource(R.drawable.ic_media_pause);
+                /*disable playback button*/
+                mPlayButton.setEnabled(false);
                 //start Chronometer
                 mChronometer.setBase(SystemClock.elapsedRealtime());
                 mChronometer.start();
@@ -196,7 +184,9 @@ public class SoundRecordFragment extends StepFragment {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
                 timeWhenPaused = 0;
                 mRecordingPrompt.setText(getString(R.string.record_prompt));
-
+                /*enable playback button*/
+                mPlayButton.setEnabled(true);
+                /*and seekbar callbacks*/
                 //getActivity().stopService(intent);
                 if(mBound) {
                     fileName = mRecordingService.getFileName();
