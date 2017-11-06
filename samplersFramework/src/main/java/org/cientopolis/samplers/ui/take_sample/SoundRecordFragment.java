@@ -32,7 +32,7 @@ public class SoundRecordFragment extends StepFragment {
     private Chronometer mChronometer;
     private TextView mRecordingPrompt;
    // private Button mRecordButton;
-    private Button mPlayButton;
+    private ImageButton mPlayButton;
     private ImageButton mRecordButton;
     private String fileName;
     boolean mBound = false;
@@ -92,7 +92,8 @@ public class SoundRecordFragment extends StepFragment {
                 mStartRecording = !mStartRecording;
             }
         });
-        mPlayButton = (Button) rootView.findViewById(R.id.fab_play);
+        mPlayButton = (ImageButton) rootView.findViewById(R.id.btn_play);
+        mPlayButton.setImageResource(R.drawable.ic_media_play);
      /*   mPlayButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -141,17 +142,18 @@ public class SoundRecordFragment extends StepFragment {
         /** Permission for audio source*/
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 10);
+
         } else {
 
-        /*comment to exclude permission request*/
+            /**comment to exclude permission request*/
 
             if (start) {
                 // start recording
-                /*this change image from "start" to "stop"*/
-                mRecordButton.setImageResource(R.drawable.ic_media_pause);
+                /* this change image from "start" to "stop" */
+                mRecordButton.setImageResource(R.drawable.ic_media_stop);
                 /*disable playback button*/
                 mPlayButton.setEnabled(false);
-                //start Chronometer
+                // start Chronometer
                 mChronometer.setBase(SystemClock.elapsedRealtime());
                 mChronometer.start();
                 mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -194,7 +196,7 @@ public class SoundRecordFragment extends StepFragment {
                     mRecordingItem.setFilePath(fileName);
                     mRecordingItem.setName("sound recorded");
                     mRecordingService.stopRecording();
-                /*get Duration*/
+                    /*get Duration*/
                     int millSecond = mRecordingService.getElapsedMillis();
                     mRecordingItem.setLength(millSecond);
 
@@ -205,7 +207,7 @@ public class SoundRecordFragment extends StepFragment {
                 getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             }
 
-        } /*comment to exclude permission request*/
+        }
     }
 
     /*test for playing recorded audio*/
