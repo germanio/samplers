@@ -5,6 +5,9 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -15,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import org.cientopolis.samplers.R;
 import org.cientopolis.samplers.model.SoundRecordStep;
@@ -44,6 +48,10 @@ public class SoundRecordFragment extends StepFragment {
     private boolean mStartRecording = true;
     private boolean mPauseRecording = true;
     private RecordingService mRecordingService;
+
+    //for playback
+    private MediaPlayer mMediaPlayer = null;
+    private SeekBar mSeekBar = null;
 
     private ServiceConnection mConnection = new ServiceConnection(){
         @Override
@@ -117,7 +125,11 @@ public class SoundRecordFragment extends StepFragment {
                 }
             }
         });*/
-
+        mSeekBar = (SeekBar) rootView.findViewById(R.id.seekbar);
+        ColorFilter filter = new LightingColorFilter
+                (getResources().getColor(R.color.primary), getResources().getColor(R.color.primary));
+        mSeekBar.getProgressDrawable().setColorFilter(filter);
+        mSeekBar.getThumb().setColorFilter(filter);
     }
 
     @Override
